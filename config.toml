@@ -1,0 +1,16 @@
+# me3 启动器配置文件
+
+# me3 程序路径 (支持相对路径)
+me3_path = ".\\me3p\\bin\\me3.exe"
+
+# 模组文件路径
+mod_path = ".\\Mods\\current.me3"
+
+# 游戏可执行文件路径
+game_exe = "..\\eldenring.exe"
+
+# 游戏类型 (原硬编码参数移至此处)
+game = "eldenring"
+
+# 附加参数 (可选，根据需要填写)
+extra_args = ["--skip-steam-init"]
