@@ -8,15 +8,21 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Install MinGW (for Windows cross-compile)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt
+          targets: x86_64-pc-windows-gnu
 
       - name: Cache cargo
         uses: Swatinem/rust-cache@v2
@@ -28,17 +34,17 @@ jobs:
         run: cargo clippy --workspace --all-targets -- -D warnings
 
       - name: Build (release)
-        run: cargo build --workspace --release
+        run: cargo build --workspace --release --target x86_64-pc-windows-gnu
 
       - name: Test
         run: cargo test --workspace
 
       - name: Stage release files
         run: |
-          New-Item -ItemType Directory -Force -Path dist | Out-Null
-          Copy-Item target/release/game_launcher.exe dist/
-          Copy-Item target/release/me3_launcher.exe dist/
-          Copy-Item config.toml dist/
+          mkdir -p dist
+          cp target/x86_64-pc-windows-gnu/release/game_launcher.exe dist/
+          cp target/x86_64-pc-windows-gnu/release/me3_launcher.exe dist/
+          cp config.toml dist/
 
       - name: Upload release executables
         uses: actions/upload-artifact@v6
